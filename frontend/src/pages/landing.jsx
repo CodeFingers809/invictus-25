@@ -38,58 +38,6 @@ export default function LandingPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navItems = [
-    { label: "Features", id: "features" },
-    { label: "Testimonials", id: "testimonials" },
-    { label: "Contact Us", id: "contact" }
-  ];
-
-  // Smooth scroll function
-  const scrollToSection = (id) => {
-    const section = document.getElementById(id);
-    if (section) {
-      window.scrollTo({
-        top: section.offsetTop - 80, // Adjusted for fixed navbar height
-        behavior: "smooth"
-      });
-    }
-  };
-
-  // Separate function for navigation logic
-  const handleNavigation = (e) => {
-    e.preventDefault(); // Prevent any default behavior
-    const token = localStorage.getItem('token');
-    console.log('Navigation clicked, token:', token);
-    
-    if (token) {
-      console.log('Has token - navigating to dashboard');
-      navigate('/connections', { replace: true });
-    } else {
-      console.log('No token - navigating to signup');
-      navigate('/signup', { replace: true });
-    }
-  };
-
-  const handleGetStarted = async () => {
-    const token = localStorage.getItem('token');
-    console.log('Get Started clicked with token:', token);
-
-    try {
-      // Try to navigate even before the check, if token exists
-      if (token) {
-        console.log('Has token - attempting navigation to dashboard/connections');
-        navigate('/connections');
-        return;
-      }
-      console.log('No token - navigating to signup');
-      navigate('/signup');
-    } catch (error) {
-      console.error('Navigation error:', error);
-      // Fallback to signup if anything fails
-      navigate('/signup');
-    }
-  };
-
   return (
       <div className="flex min-h-screen flex-col bg-gray-50">
           <header className="fixed w-full z-50 bg-white/60">
@@ -110,22 +58,20 @@ export default function LandingPage() {
                       </Link>
                   </motion.div>
 
-                  <nav className="hidden md:flex items-center space-x-8">
-                      {navItems.map((item) => (
-                          <motion.div
-                              key={item.id}
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                          >
-                              <button
-                                  onClick={() => scrollToSection(item.id)}
-                                  className="text-sm font-medium text-gray-800/90 hover:text-gray-500 transition-colors duration-300"
-                              >
-                                  {item.label}
-                              </button>
-                          </motion.div>
-                      ))}
-                  </nav>
+          <nav className="hidden md:flex items-center space-x-8">
+            {["Features", "Testimonials", "Pricing", "Contact Us"].map((item) => (
+              <motion.div key={item} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                {(
+                  <a
+                    href={`#${item.toLowerCase()}`}
+                    className={`text-sm font-medium transition-colors duration-300 ${scrolled ? "text-gray-400 hover:text-blue-400" : "text-white/90 hover:text-white"}`}
+                  >
+                    {item}
+                  </a>
+                )}
+              </motion.div>
+            ))}
+          </nav>
 
                   <div className="flex items-center gap-4">
                       {isAuthenticated ? (
